@@ -30,7 +30,7 @@
 ---
 
 <div align="center">
-<img src="../assets/social-preview.jpg" width="90%" alt="WebToApp:我的应用首页、应用列表与主工具箱(AI Coding、扩展模块、端口管理器)、单个应用的 APK 操作(编辑、创建快捷方式、构建/分享/导出 APK),以及关于页面——全部运行在 Android 手机上" />
+<img src="../assets/social-preview.png" width="90%" alt="WebToApp:我的应用首页、应用列表与主工具箱(AI Coding、扩展模块、端口管理器)、单个应用的 APK 操作(编辑、创建快捷方式、构建/分享/导出 APK),以及关于页面——全部运行在 Android 手机上" />
 </div>
 
 ---

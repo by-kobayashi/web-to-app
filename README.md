@@ -30,7 +30,7 @@
 ---
 
 <div align="center">
-<img src=".github/assets/social-preview.jpg" width="90%" alt="WebToApp: My Apps home, the app list with the main toolbox (AI Coding, Extension Modules, Port Manager), per-app APK actions (Edit, Create Shortcut, Build/Share/Export APK), and the About screen — all running on an Android phone" />
+<img src=".github/assets/social-preview.png" width="90%" alt="WebToApp: My Apps home, the app list with the main toolbox (AI Coding, Extension Modules, Port Manager), per-app APK actions (Edit, Create Shortcut, Build/Share/Export APK), and the About screen — all running on an Android phone" />
 </div>
 
 ---
