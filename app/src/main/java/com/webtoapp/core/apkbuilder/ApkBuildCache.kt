@@ -90,7 +90,7 @@ class ApkBuildCache(private val context: Context) {
     }
 
     fun shellTemplateId(templateApk: File): String {
-        return "name=${templateApk.name}|size=${templateApk.length()}"
+        return "sha256=${fileSha256(templateApk)}"
     }
 
     fun plan(
@@ -388,27 +388,44 @@ class ApkBuildCache(private val context: Context) {
     private fun fileFingerprint(path: String?): String {
         if (path.isNullOrBlank()) return "none"
         val file = File(path)
-        if (!file.isFile) return "missing:$path"
-        return "file:${file.absolutePath}|${file.length()}|${file.lastModified()}"
+        if (!file.isFile) return "missing"
+        return "sha256=${fileSha256(file)}"
     }
 
     private fun treeFingerprint(dir: File): String {
-        if (!dir.isDirectory) return "missing:${dir.absolutePath}"
+        if (!dir.isDirectory) return "missing"
         val digest = MessageDigest.getInstance("SHA-256")
         dir.walkTopDown()
             .filter { it.isFile }
-            .sortedBy { it.relativeTo(dir).path }
+            .sortedBy { it.relativeTo(dir).invariantSeparatorsPath }
             .forEach { file ->
-                val rel = file.relativeTo(dir).path
-                digest.update(rel.toByteArray())
-                digest.update(file.length().toString().toByteArray())
-                digest.update(file.lastModified().toString().toByteArray())
+                val relativePath = file.relativeTo(dir).invariantSeparatorsPath
+                digest.update(relativePath.toByteArray(Charsets.UTF_8))
+                digest.update(0)
+                digest.update(fileSha256(file).toByteArray(Charsets.UTF_8))
+                digest.update(0)
             }
-        return digest.digest().joinToString("") { "%02x".format(it) }
+        return digest.digest().toHexString()
+    }
+
+    private fun fileSha256(file: File): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        file.inputStream().buffered().use { input ->
+            val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+            while (true) {
+                val read = input.read(buffer)
+                if (read < 0) break
+                digest.update(buffer, 0, read)
+            }
+        }
+        return digest.digest().toHexString()
     }
 
     private fun sha256(text: String): String {
         val digest = MessageDigest.getInstance("SHA-256")
-        return digest.digest(text.toByteArray()).joinToString("") { "%02x".format(it) }
+        return digest.digest(text.toByteArray(Charsets.UTF_8)).toHexString()
     }
+
+    private fun ByteArray.toHexString(): String =
+        joinToString("") { "%02x".format(it) }
 }

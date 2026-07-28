@@ -119,7 +119,7 @@ class CloneLauncherActivity : Activity() {
 
         if (cfg.remoteActivationEnabled) {
             Thread {
-                val activated = isActivated(appId) && checkRemoteActivation(cfg)
+                val activated = isActivated(appId) && checkRemoteActivation(cfg, appId)
                 handler.post {
                     if (activated) {
                         proceedAfterActivation(cfg)
@@ -181,7 +181,7 @@ class CloneLauncherActivity : Activity() {
                 return@setOnClickListener
             }
             Thread {
-                val result = verifyCode(cfg, code)
+                val result = verifyCode(cfg, code, appId)
                 handler.post {
                     if (result) {
                         saveActivation(appId)
@@ -195,9 +195,9 @@ class CloneLauncherActivity : Activity() {
         }
     }
 
-    private fun verifyCode(cfg: CloneConfig, inputCode: String): Boolean {
+    private fun verifyCode(cfg: CloneConfig, inputCode: String, appId: Long): Boolean {
         if (cfg.remoteActivationEnabled) {
-            return verifyRemoteCode(cfg, inputCode)
+            return verifyRemoteCode(cfg, inputCode, appId)
         }
         val normalized = normalizeCode(inputCode)
         return cfg.activationCodes.any { validCode ->
@@ -207,53 +207,62 @@ class CloneLauncherActivity : Activity() {
         }
     }
 
-    private fun verifyRemoteCode(cfg: CloneConfig, inputCode: String): Boolean {
+    private fun verifyRemoteCode(cfg: CloneConfig, inputCode: String, appId: Long): Boolean {
         return try {
-            val deviceId = generateDeviceId()
-            val normalized = normalizeCode(inputCode)
-            val conn = (URL(cfg.remoteVerifyUrl).openConnection() as HttpURLConnection).apply {
-                requestMethod = "POST"
-                doOutput = true
-                setRequestProperty("Content-Type", "application/json")
-                connectTimeout = 10000
-                readTimeout = 10000
-            }
-            val requestBody = """{"code":"$normalized","deviceId":"$deviceId","packageName":"$packageName"}"""
-            conn.outputStream.use { it.write(requestBody.toByteArray()) }
-            if (conn.responseCode == 200) {
+            val conn = openRemoteConnection(cfg.remoteVerifyUrl, 10_000) ?: return offlineAllowed(cfg, appId)
+            val requestBody = JSONObject()
+                .put("code", normalizeCode(inputCode))
+                .put("deviceId", generateDeviceId())
+                .put("packageName", packageName)
+                .toString()
+            conn.outputStream.use { it.write(requestBody.toByteArray(Charsets.UTF_8)) }
+            if (conn.responseCode == HttpURLConnection.HTTP_OK) {
                 val response = conn.inputStream.bufferedReader().use { it.readText() }
-                val result = JSONObject(response)
-                result.optBoolean("success", false)
+                JSONObject(response).optBoolean("success", false)
             } else {
-                cfg.remoteOfflinePolicy == "ALLOW"
+                offlineAllowed(cfg, appId)
             }
-        } catch (e: Exception) {
-            cfg.remoteOfflinePolicy == "ALLOW" || cfg.remoteOfflinePolicy == "ALLOW_CACHED"
+        } catch (_: Exception) {
+            offlineAllowed(cfg, appId)
         }
     }
 
-    private fun checkRemoteActivation(cfg: CloneConfig): Boolean {
+    private fun checkRemoteActivation(cfg: CloneConfig, appId: Long): Boolean {
         return try {
-            val deviceId = generateDeviceId()
-            val conn = (URL(cfg.remoteVerifyUrl).openConnection() as HttpURLConnection).apply {
-                requestMethod = "POST"
-                doOutput = true
-                setRequestProperty("Content-Type", "application/json")
-                connectTimeout = 5000
-                readTimeout = 5000
-            }
-            val requestBody = """{"code":"","deviceId":"$deviceId","packageName":"$packageName","checkOnly":true}"""
-            conn.outputStream.use { it.write(requestBody.toByteArray()) }
-            if (conn.responseCode == 200) {
+            val conn = openRemoteConnection(cfg.remoteVerifyUrl, 5_000) ?: return offlineAllowed(cfg, appId)
+            val requestBody = JSONObject()
+                .put("code", "")
+                .put("deviceId", generateDeviceId())
+                .put("packageName", packageName)
+                .put("checkOnly", true)
+                .toString()
+            conn.outputStream.use { it.write(requestBody.toByteArray(Charsets.UTF_8)) }
+            if (conn.responseCode == HttpURLConnection.HTTP_OK) {
                 val response = conn.inputStream.bufferedReader().use { it.readText() }
-                val result = JSONObject(response)
-                result.optBoolean("success", false)
+                JSONObject(response).optBoolean("success", false)
             } else {
-                cfg.remoteOfflinePolicy == "ALLOW_CACHED"
+                offlineAllowed(cfg, appId)
             }
-        } catch (e: Exception) {
-            cfg.remoteOfflinePolicy == "ALLOW_CACHED" || cfg.remoteOfflinePolicy == "ALLOW"
+        } catch (_: Exception) {
+            offlineAllowed(cfg, appId)
         }
+    }
+
+    private fun openRemoteConnection(url: String, timeoutMs: Int): HttpURLConnection? {
+        if (!url.startsWith("https://", ignoreCase = true)) return null
+        return (URL(url).openConnection() as? HttpURLConnection)?.apply {
+            requestMethod = "POST"
+            doOutput = true
+            setRequestProperty("Content-Type", "application/json")
+            connectTimeout = timeoutMs
+            readTimeout = timeoutMs
+        }
+    }
+
+    private fun offlineAllowed(cfg: CloneConfig, appId: Long): Boolean = when (cfg.remoteOfflinePolicy) {
+        "ALLOW" -> true
+        "ALLOW_CACHED" -> isActivated(appId)
+        else -> false
     }
 
     private fun proceedAfterActivation(cfg: CloneConfig) {

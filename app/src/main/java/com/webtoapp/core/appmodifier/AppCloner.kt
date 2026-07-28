@@ -259,17 +259,20 @@ class AppCloner(private val context: Context) {
 
             safeProgress(20, "修改包名和应用名...")
 
+            val cloneHostDex = loadCloneHostDex()
+            if (hasModifications && cloneHostDex == null) {
+                AppLogger.w("AppCloner", "Clone-host enhancements requested but clone_host.dex is unavailable")
+                return@withContext AppModifyResult.Error(
+                    "启动页、激活和公告增强当前不可用；请移除这些增强设置后重试"
+                )
+            }
+
             var iconBitmap: Bitmap? = null
             try {
                 iconBitmap = config.newIconPath?.let { loadBitmapFromPath(it) }
                     ?: config.originalApp.icon?.let { drawableToBitmap(it) }
             } catch (e: Exception) {
                 AppLogger.e("AppCloner", "Failed to load icon: ${e.message}")
-            }
-
-            val cloneHostDex = loadCloneHostDex()
-            if (hasModifications && cloneHostDex == null) {
-                AppLogger.w("AppCloner", "Modifications requested but clone_host.dex not found; proceeding without injection")
             }
 
             val splashMediaPath = if (CloneConfigBuilder.needsSplashMedia(config)) {
