@@ -4938,6 +4938,7 @@ object Strings {
     val appModifierModeCloneDesc: String get() = StringsE.appModifierModeCloneDesc
     val appModifierRecommended: String get() = StringsE.appModifierRecommended
     val appModifierCloneNeedsOriginalIcon: String get() = StringsE.appModifierCloneNeedsOriginalIcon
+    val appModifierCloneNoEnhancements: String get() = StringsE.appModifierCloneNoEnhancements
     val appModifierShortcutHint: String get() = StringsE.appModifierShortcutHint
     val appModifierWorking: String get() = StringsE.appModifierWorking
     fun appModifierResultCount(count: Int): String = StringsE.appModifierResultCount(count)
@@ -65171,6 +65172,19 @@ object StringsE {
         AppLanguage.RUSSIAN -> "Клон недоступен с пользовательской иконкой. Используйте ярлык или верните оригинальную иконку"
         AppLanguage.JAPANESE -> "カスタムアイコン時はクローン不可。ショートカットを使うか元のアイコンに戻す"
         AppLanguage.KOREAN -> "사용자 지정 아이콘에서는 클론 설치 불가. 바로가기를 쓰거나 원본 아이콘 복원"
+    }
+
+    val appModifierCloneNoEnhancements: String get() = when (Strings.lang) {
+        AppLanguage.CHINESE -> "克隆安装暂不支持开屏、激活码与公告，请改用快捷方式或关闭这些增强"
+        AppLanguage.ENGLISH -> "Clone install does not support splash, activation, or announcement. Use shortcut mode or turn these off"
+        AppLanguage.ARABIC -> "تثبيت النسخة لا يدعم الافتتاح أو التفعيل أو الإعلان. استخدم الاختصار أو أوقف هذه الميزات"
+        AppLanguage.PORTUGUESE -> "O clone não suporta splash, ativação nem anúncio. Use atalho ou desative esses recursos"
+        AppLanguage.SPANISH -> "El clon no admite splash, activación ni aviso. Usa acceso directo o desactiva estas funciones"
+        AppLanguage.FRENCH -> "Le clone ne prend pas en charge splash, activation ni annonce. Utilisez le raccourci ou désactivez-les"
+        AppLanguage.GERMAN -> "Der Klon unterstützt Splash, Aktivierung und Hinweis nicht. Verknüpfung nutzen oder diese deaktivieren"
+        AppLanguage.RUSSIAN -> "Клон не поддерживает splash, активацию и объявление. Используйте ярлык или отключите их"
+        AppLanguage.JAPANESE -> "クローンはスプラッシュ/認証/お知らせに未対応。ショートカットを使うかこれらを無効にしてください"
+        AppLanguage.KOREAN -> "클론 설치는 스플래시, 활성화, 공지를 지원하지 않습니다. 바로가기를 쓰거나 해당 기능을 끄세요"
     }
 
     val appModifierShortcutHint: String get() = when (Strings.lang) {

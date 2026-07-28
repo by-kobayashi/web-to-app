@@ -7,7 +7,6 @@ import com.webtoapp.core.appmodifier.AppModifyConfig
 import com.webtoapp.core.appmodifier.InstalledAppInfo
 import com.webtoapp.data.model.ActivationDialogConfig
 import com.webtoapp.data.model.Announcement
-import com.webtoapp.data.model.BgmConfig
 import com.webtoapp.data.model.SplashConfig
 
 @Stable
@@ -28,10 +27,7 @@ data class AppModifierEditState(
     val activationRemoteConfig: com.webtoapp.data.model.RemoteActivationConfig = com.webtoapp.data.model.RemoteActivationConfig(),
 
     val announcementEnabled: Boolean = false,
-    val announcement: Announcement = Announcement(),
-
-    val bgmEnabled: Boolean = false,
-    val bgmConfig: BgmConfig = BgmConfig()
+    val announcement: Announcement = Announcement()
 ) {
     fun toConfig(originalApp: InstalledAppInfo): AppModifyConfig {
         return AppModifyConfig(
@@ -46,9 +42,7 @@ data class AppModifierEditState(
             activationDialogConfig = activationDialogConfig,
             activationRemoteConfig = activationRemoteConfig,
             announcementEnabled = announcementEnabled,
-            announcement = announcement,
-            bgmEnabled = bgmEnabled,
-            bgmConfig = if (bgmEnabled) bgmConfig else null
+            announcement = announcement
         )
     }
 }
