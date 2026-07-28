@@ -73,17 +73,17 @@ class ApkBuildCacheTest {
     }
 
     @Test
-    fun `shell template id changes with size but not mtime`() {
+    fun `shell template id tracks content rather than mtime or size`() {
         val cache = ApkBuildCache(RuntimeEnvironment.getApplication())
         val file = File(RuntimeEnvironment.getApplication().cacheDir, "t.apk")
-        file.writeBytes(ByteArray(10))
-        val a = cache.shellTemplateId(file)
+        file.writeBytes(byteArrayOf(1, 2, 3, 4))
+        val initial = cache.shellTemplateId(file)
+
         file.setLastModified(file.lastModified() + 60_000L)
-        val same = cache.shellTemplateId(file)
-        assertThat(same).isEqualTo(a)
-        file.writeBytes(ByteArray(20))
-        val b = cache.shellTemplateId(file)
-        assertThat(a).isNotEqualTo(b)
+        assertThat(cache.shellTemplateId(file)).isEqualTo(initial)
+
+        file.writeBytes(byteArrayOf(4, 3, 2, 1))
+        assertThat(cache.shellTemplateId(file)).isNotEqualTo(initial)
     }
 
     @Test
