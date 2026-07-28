@@ -83,12 +83,12 @@ import com.webtoapp.core.appmodifier.AppCloner
 import com.webtoapp.core.appmodifier.AppFilterType
 import com.webtoapp.core.appmodifier.AppListProvider
 import com.webtoapp.core.appmodifier.AppModifyResult
+import com.webtoapp.core.appmodifier.CloneConfigBuilder
 import com.webtoapp.core.appmodifier.InstalledAppInfo
 import com.webtoapp.core.i18n.Strings
 import com.webtoapp.data.model.SplashType
 import com.webtoapp.ui.components.ActivationCodeCard
 import com.webtoapp.ui.components.AppNameTextFieldSimple
-import com.webtoapp.ui.components.BgmCard
 import com.webtoapp.ui.components.IconPickerWithLibrary
 import com.webtoapp.ui.design.WtaButton
 import com.webtoapp.ui.design.WtaButtonSize
@@ -780,7 +780,13 @@ private fun AppModifyContent(
     }
 
     val hasCustomIcon = editState.newIconUri != null || editState.newIconPath != null
-    val canClone = !hasCustomIcon
+    val cloneBlockedReason = when {
+        hasCustomIcon -> Strings.appModifierCloneNeedsOriginalIcon
+        CloneConfigBuilder.hasAnyModification(editState.toConfig(app)) ->
+            Strings.appModifierCloneNoEnhancements
+        else -> null
+    }
+    val canClone = cloneBlockedReason == null
     val nameReady = editState.newAppName.isNotBlank()
 
     LaunchedEffect(canClone) {
@@ -822,7 +828,7 @@ private fun AppModifyContent(
 
             OutputModeCard(
                 mode = outputMode,
-                canClone = canClone,
+                cloneBlockedReason = cloneBlockedReason,
                 onModeChange = { outputMode = it }
             )
 
@@ -908,13 +914,6 @@ private fun AppModifyContent(
                         )
                     }
                 }
-            )
-
-            BgmCard(
-                enabled = editState.bgmEnabled,
-                config = editState.bgmConfig,
-                onEnabledChange = { update { copy(bgmEnabled = it) } },
-                onConfigChange = { update { copy(bgmConfig = it) } }
             )
 
             if (outputMode == ModifyOutputMode.CLONE) {
@@ -1031,9 +1030,10 @@ private fun IdentitySide(
 @Composable
 private fun OutputModeCard(
     mode: ModifyOutputMode,
-    canClone: Boolean,
+    cloneBlockedReason: String?,
     onModeChange: (ModifyOutputMode) -> Unit
 ) {
+    val canClone = cloneBlockedReason == null
     WtaCard(tone = WtaCardTone.Surface, contentPadding = PaddingValues(12.dp)) {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text(
@@ -1052,11 +1052,7 @@ private fun OutputModeCard(
             ModeOption(
                 selected = mode == ModifyOutputMode.CLONE,
                 title = Strings.cloneInstall,
-                description = if (canClone) {
-                    Strings.appModifierModeCloneDesc
-                } else {
-                    Strings.appModifierCloneNeedsOriginalIcon
-                },
+                description = cloneBlockedReason ?: Strings.appModifierModeCloneDesc,
                 icon = Icons.Outlined.ContentCopy,
                 enabled = canClone,
                 onClick = { if (canClone) onModeChange(ModifyOutputMode.CLONE) }

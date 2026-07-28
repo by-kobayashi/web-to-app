@@ -4,7 +4,6 @@ import android.graphics.drawable.Drawable
 import com.webtoapp.core.activation.ActivationCode
 import com.webtoapp.data.model.ActivationDialogConfig
 import com.webtoapp.data.model.Announcement
-import com.webtoapp.data.model.BgmConfig
 import com.webtoapp.data.model.SplashConfig
 
 data class InstalledAppInfo(
@@ -47,10 +46,7 @@ data class AppModifyConfig(
     val activationRemoteConfig: com.webtoapp.data.model.RemoteActivationConfig = com.webtoapp.data.model.RemoteActivationConfig(),
 
     val announcementEnabled: Boolean = false,
-    val announcement: Announcement = Announcement(),
-
-    val bgmEnabled: Boolean = false,
-    val bgmConfig: BgmConfig? = null
+    val announcement: Announcement = Announcement()
 )
 
 sealed class AppModifyResult {
