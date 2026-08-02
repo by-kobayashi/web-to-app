@@ -223,8 +223,6 @@ The official documentation site is published at **[shiaho777.github.io/web-to-ap
 | Extensions | [/extensions/](https://shiaho777.github.io/web-to-app/extensions/) | JS/CSS modules, userscripts, Chrome MV3, API reference, publishing |
 | 简体中文 | [/zh/](https://shiaho777.github.io/web-to-app/zh/) | Full Chinese mirror of every page above |
 
-The site is a VitePress app authored under [`docs/`](docs/) in this repository. [`.github/workflows/docs-deploy.yml`](.github/workflows/docs-deploy.yml) builds and deploys it to GitHub Pages on every push to `main` that touches `docs/` (pull requests only build, to catch breakage early).
-
 ## Architecture
 
 - The repository has **three Gradle modules**: `app` (the full builder and host), `shell` (the runtime host embedded into generated APKs), and `clone-host` (host code for app cloning — compiled to a `classes.jar`, converted to DEX via d8, and bundled as an asset for `AppCloner`).

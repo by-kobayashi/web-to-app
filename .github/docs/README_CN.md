@@ -223,8 +223,6 @@ App 会同时拉取 `registry.json` 和 `submissions.json`,只展示两边都存
 | 扩展开发 | [/zh/extensions/](https://shiaho777.github.io/web-to-app/zh/extensions/) | JS/CSS 模块、油猴脚本、Chrome MV3、API 参考、发布流程 |
 | English | [/](https://shiaho777.github.io/web-to-app/) | 上述全部页面的英文原版 |
 
-站点是基于 VitePress 的文档工程,源码在本仓库的 [`docs/`](../../docs/) 目录下。[`.github/workflows/docs-deploy.yml`](../workflows/docs-deploy.yml) 会在每次触及 `docs/` 的 push 到 `main` 时构建并发布到 GitHub Pages(Pull Request 只构建不部署,提前拦截坏链)。
-
 ## 架构说明
 
 - 仓库有**三个 Gradle 模块**:`app`(完整构建器和宿主)、`shell`(嵌入生成 APK 的运行时宿主)、`clone-host`(应用克隆的宿主代码 —— 编译提取 `classes.jar`,经 d8 转 DEX,作为 asset 供 `AppCloner` 使用)。
