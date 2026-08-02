@@ -34,6 +34,16 @@
 <img src="../assets/social-preview.png" width="90%" alt="WebToApp:我的应用首页、应用列表与主工具箱(Agent、扩展模块、端口管理器)、单个应用的 APK 操作(编辑、创建快捷方式、构建/分享/导出 APK),以及关于页面——全部运行在 Android 手机上" />
 </div>
 
+### 演示视频
+
+<div align="center">
+<video src="../assets/demo.mp4" width="45%" controls muted loop playsinline>
+  您的浏览器不支持 video 标签。
+</video>
+</div>
+
+<p align="center"><em>在设备上构建并打包一个应用的快速演示。</em></p>
+
 ---
 
 ## WebToApp 有什么不同
