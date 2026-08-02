@@ -217,15 +217,6 @@ WebToApp ships a built-in AI agent (open from **⋮ → Agent**) that can operat
 | Modules | List, create, update extension modules |
 | Interaction | Ask user questions (multi-select), plan mode (propose → approve → execute), todo tracking |
 
-**Key behaviors:**
-
-- **Plan mode** — for multi-step tasks the Agent proposes a plan and waits for your approval before touching anything.
-- **Permission gating** — destructive or state-changing tools always ask first; you can approve, deny, or allow-all per tool.
-- **Resilience** — automatic retry with exponential backoff on 429/5xx; streaming SSE parser isolates per-section failures so a single malformed chunk never kills a turn.
-- **Sessions** — each conversation persists with its own title and history; switch or delete anytime.
-
-The Agent is model-agnostic: point it at OpenAI, Anthropic (via proxy), DeepSeek, Qwen, Ollama, or any endpoint that speaks the OpenAI chat-completions format with function calling.
-
 ---
 
 ## Module market
