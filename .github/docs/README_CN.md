@@ -36,13 +36,14 @@
 
 ### 演示视频
 
-<div align="center">
-<video src="https://github.com/user-attachments/assets/4e1a476d-2687-4d97-90a9-d077a15ebe31" width="45%" controls muted loop playsinline>
+<details>
+<summary><b>▶ 观看:在设备上构建并打包一个应用的快速演示</b></summary>
+
+<video src="https://github.com/user-attachments/assets/4e1a476d-2687-4d97-90a9-d077a15ebe31" controls muted loop playsinline>
   您的浏览器不支持 video 标签。
 </video>
-</div>
 
-<p align="center"><em>在设备上构建并打包一个应用的快速演示。</em></p>
+</details>
 
 ---
 
