@@ -37,7 +37,7 @@
 ### 演示视频
 
 <div align="center">
-<video src="../assets/demo.mp4" width="45%" controls muted loop playsinline>
+<video src="https://github.com/user-attachments/assets/4e1a476d-2687-4d97-90a9-d077a15ebe31" width="45%" controls muted loop playsinline>
   您的浏览器不支持 video 标签。
 </video>
 </div>
