@@ -341,7 +341,7 @@ private fun ContactGrid() {
                 icon = Icons.Outlined.Chat,
                 label = "Discord",
                 value = discordCommunityLabel,
-                action = ContactAction.OpenUrl("https://8efik.no-mad-sub.one/link/7bb7XI5t4ZVdzyy5?clash=3")
+                action = ContactAction.OpenUrl("https://discord.gg/KUKEn4zPHQ")
             ),
             ContactEntry(
                 icon = Icons.Outlined.Tag,
