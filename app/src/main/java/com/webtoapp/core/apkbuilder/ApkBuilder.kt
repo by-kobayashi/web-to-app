@@ -4073,7 +4073,9 @@ builtins.__import__ = _w2a_import
         if (config.notificationEnabled) {
             components += "com.webtoapp.core.notification.NotificationPollingService"
             components += "com.webtoapp.core.notification.NotificationWebSocketService"
-            components += "com.webtoapp.core.notification.NotificationFcmService"
+            if (!com.webtoapp.BuildConfig.FDROID) {
+                components += "com.webtoapp.core.notification.NotificationFcmService"
+            }
         }
 
         if (config.enableNativeBridge && config.webViewBehavior.nativeBridgeNotificationScheduled) {
@@ -4370,7 +4372,9 @@ private fun WebApp.buildAnnouncementBlock(): AnnouncementBlock = AnnouncementBlo
 )
 
 private fun WebApp.buildAdsBlock(): AdsBlock = AdsBlock(
-    enabled = adsEnabled,
+    // F-Droid hosts do not ship the admob stack, so export cannot graft it.
+    // Keep saved unit ids; only the enabled flag is forced off.
+    enabled = adsEnabled && !com.webtoapp.BuildConfig.FDROID,
     appId = adConfig?.appId ?: "",
     bannerEnabled = adConfig?.bannerEnabled ?: false,
     bannerId = adConfig?.bannerId ?: "",
